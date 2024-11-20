@@ -5,23 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutorial Interactivo de Flexbox</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f0f2f5;
         }
 
         h1, h2 {
             color: #333;
             text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .container {
-            margin: 20px 0;
+            margin: 20px auto;
             padding: 20px;
             border-radius: 8px;
             background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
         }
 
         .flex-container {
@@ -31,6 +41,7 @@
             margin: 20px 0;
             padding: 10px;
             display: flex;
+            transition: all 0.3s ease;
         }
 
         .box {
@@ -44,18 +55,20 @@
             font-size: 1.2em;
             border-radius: 4px;
             transition: all 0.3s ease;
+            height: 80px;
         }
 
         .box:nth-child(1) { font-size: 1em; }
         .box:nth-child(2) { font-size: 2em; }
         .box:nth-child(3) { font-size: 1.5em; }
 
-        .box {
-            height: 80px;
-        }
-
         .flex-container[data-align="stretch"] .box {
             height: auto;
+        }
+
+        .flex-container[data-direction="column"],
+        .flex-container[data-direction="column-reverse"] {
+            min-height: 400px;
         }
 
         .controls {
@@ -67,6 +80,9 @@
         }
 
         .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
             margin: 10px 0;
         }
 
@@ -75,10 +91,11 @@
             color: white;
             border: none;
             padding: 8px 16px;
-            margin: 5px;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         button:hover {
@@ -101,6 +118,7 @@
             border-radius: 4px;
             margin: 10px 0;
             font-family: monospace;
+            word-break: break-all;
         }
 
         .description-panel {
@@ -114,11 +132,13 @@
         .description-panel h3 {
             margin-top: 0;
             color: #084298;
+            font-size: 1.2rem;
         }
 
         .description-panel p {
             margin: 10px 0;
             line-height: 1.5;
+            font-size: 0.95rem;
         }
 
         .description-content {
@@ -139,6 +159,77 @@
             margin-top: 10px;
             font-style: italic;
             color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Estilos responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .controls {
+                padding: 12px;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            button {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+                flex: 1 1 auto;
+                min-width: calc(50% - 5px);
+                max-width: calc(50% - 5px);
+                text-align: center;
+            }
+
+            .description-panel {
+                padding: 15px;
+            }
+
+            .box {
+                width: 60px;
+                height: 60px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            button {
+                min-width: 100%;
+                max-width: 100%;
+            }
+
+            .flex-container {
+                min-height: 250px;
+            }
+
+            .flex-container[data-direction="column"],
+            .flex-container[data-direction="column-reverse"] {
+                min-height: 300px;
+            }
+
+            .description-panel h3 {
+                font-size: 1.1rem;
+            }
+
+            .description-panel p {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -146,6 +237,17 @@
     <h1>Tutorial Interactivo de Flexbox</h1>
 
     <div class="container">
+        <div class="controls">
+            <div class="property-name">flex-direction:</div>
+            <div class="button-group" id="flex-direction-controls">
+                <button onclick="setFlexDirection('row')">row</button>
+                <button onclick="setFlexDirection('row-reverse')">row-reverse</button>
+                <button onclick="setFlexDirection('column')">column</button>
+                <button onclick="setFlexDirection('column-reverse')">column-reverse</button>
+            </div>
+            <div class="current-value" id="flex-direction-value">flex-direction: row;</div>
+        </div>
+
         <div class="controls">
             <div class="property-name">justify-content:</div>
             <div class="button-group" id="justify-content-controls">
@@ -178,26 +280,53 @@
 
         <div class="description-panel">
             <h3>Descripción</h3>
-            <!-- Descripciones para justify-content -->
+            <div id="direction-row" class="description-content">
+                <h3>flex-direction: row</h3>
+                <p>Es el valor por defecto. Los elementos se colocan en una fila horizontal, de izquierda a derecha.</p>
+                <p>El eje principal es horizontal y el eje transversal es vertical.</p>
+                <p class="example-text">Uso común: Navegación horizontal, listas de elementos en línea, barras de herramientas.</p>
+            </div>
+
+            <div id="direction-row-reverse" class="description-content">
+                <h3>flex-direction: row-reverse</h3>
+                <p>Los elementos se colocan en una fila horizontal, pero de derecha a izquierda.</p>
+                <p>Invierte el orden de los elementos manteniendo el eje principal horizontal.</p>
+                <p class="example-text">Uso común: Diseños RTL (Right-to-Left), menús alternativos, interfaces de usuario específicas.</p>
+            </div>
+
+            <div id="direction-column" class="description-content">
+                <h3>flex-direction: column</h3>
+                <p>Los elementos se apilan verticalmente, de arriba hacia abajo.</p>
+                <p>El eje principal se vuelve vertical y el eje transversal horizontal.</p>
+                <p class="example-text">Uso común: Menús verticales, layouts de formularios, diseños móviles.</p>
+            </div>
+
+            <div id="direction-column-reverse" class="description-content">
+                <h3>flex-direction: column-reverse</h3>
+                <p>Los elementos se apilan verticalmente, pero de abajo hacia arriba.</p>
+                <p>Invierte el orden de los elementos en el eje vertical.</p>
+                <p class="example-text">Uso común: Interfaces especiales, animaciones, efectos visuales específicos.</p>
+            </div>
+
             <div id="justify-flex-start" class="description-content">
                 <h3>justify-content: flex-start</h3>
-                <p>Alinea los elementos al inicio del contenedor en el eje principal (horizontal).</p>
+                <p>Alinea los elementos al inicio del contenedor en el eje principal.</p>
                 <p>Es el valor por defecto de justify-content.</p>
-                <p class="example-text">Uso común: Cuando quieres que todos los elementos empiecen desde el lado izquierdo.</p>
+                <p class="example-text">Uso común: Cuando quieres que todos los elementos empiecen desde el inicio del eje principal.</p>
             </div>
 
             <div id="justify-center" class="description-content">
                 <h3>justify-content: center</h3>
                 <p>Centra los elementos en el eje principal del contenedor.</p>
                 <p>Todos los elementos se agrupan en el centro, manteniendo sus márgenes originales.</p>
-                <p class="example-text">Uso común: Centrar elementos horizontalmente en una navegación o galería.</p>
+                <p class="example-text">Uso común: Centrar elementos en el eje principal.</p>
             </div>
 
             <div id="justify-flex-end" class="description-content">
                 <h3>justify-content: flex-end</h3>
                 <p>Alinea los elementos al final del contenedor en el eje principal.</p>
-                <p>Todos los elementos se mueven hacia el lado derecho del contenedor.</p>
-                <p class="example-text">Uso común: Alinear elementos a la derecha, como botones de acción en un formulario.</p>
+                <p>Todos los elementos se mueven hacia el final del eje principal.</p>
+                <p class="example-text">Uso común: Alinear elementos al final, como botones de acción en un formulario.</p>
             </div>
 
             <div id="justify-space-between" class="description-content">
@@ -214,33 +343,32 @@
                 <p class="example-text">Uso común: Crear diseños con espaciado uniforme entre elementos.</p>
             </div>
 
-            <!-- Descripciones para align-items -->
             <div id="align-flex-start" class="description-content">
                 <h3>align-items: flex-start</h3>
-                <p>Alinea los elementos al inicio del eje transversal (vertical).</p>
-                <p>Los elementos se alinean en la parte superior del contenedor.</p>
-                <p class="example-text">Uso común: Alinear elementos en la parte superior de un contenedor.</p>
+                <p>Alinea los elementos al inicio del eje transversal.</p>
+                <p>Los elementos se alinean al inicio del eje transversal del contenedor.</p>
+                <p class="example-text">Uso común: Alinear elementos al inicio del eje transversal.</p>
             </div>
 
             <div id="align-center" class="description-content">
                 <h3>align-items: center</h3>
                 <p>Centra los elementos en el eje transversal.</p>
-                <p>Los elementos se centran verticalmente en el contenedor.</p>
-                <p class="example-text">Uso común: Centrar verticalmente elementos en un banner o hero section.</p>
+                <p>Los elementos se centran en el eje transversal del contenedor.</p>
+                <p class="example-text">Uso común: Centrar elementos verticalmente en una fila o horizontalmente en una columna.</p>
             </div>
 
             <div id="align-flex-end" class="description-content">
                 <h3>align-items: flex-end</h3>
                 <p>Alinea los elementos al final del eje transversal.</p>
-                <p>Los elementos se alinean en la parte inferior del contenedor.</p>
-                <p class="example-text">Uso común: Alinear elementos en la parte inferior de un contenedor.</p>
+                <p>Los elementos se alinean al final del eje transversal del contenedor.</p>
+                <p class="example-text">Uso común: Alinear elementos al final del eje transversal.</p>
             </div>
 
             <div id="align-stretch" class="description-content">
                 <h3>align-items: stretch</h3>
                 <p>Estira los elementos para que ocupen todo el espacio disponible en el eje transversal.</p>
-                <p>Los elementos se estiran verticalmente para llenar el contenedor.</p>
-                <p class="example-text">Uso común: Hacer que todos los elementos tengan la misma altura en una fila.</p>
+                <p>Los elementos se estiran para llenar el contenedor en el eje transversal.</p>
+                <p class="example-text">Uso común: Hacer que todos los elementos tengan la misma dimensión en el eje transversal.</p>
             </div>
 
             <div id="align-baseline" class="description-content">
@@ -264,17 +392,25 @@
         }
 
         function showDescription(type, value) {
-            // Ocultar todas las descripciones
             document.querySelectorAll('.description-content').forEach(desc => {
                 desc.classList.remove('active');
             });
 
-            // Mostrar la descripción correspondiente
             const descriptionId = `${type}-${value}`;
             const description = document.getElementById(descriptionId);
             if (description) {
                 description.classList.add('active');
             }
+        }
+
+        // Nueva función para flex-direction
+        function setFlexDirection(value) {
+            const container = document.getElementById('demo-container');
+            container.style.flexDirection = value;
+            container.setAttribute('data-direction', value);
+            document.getElementById('flex-direction-value').textContent = `flex-direction: ${value};`;
+            updateActiveButtons('flex-direction', value);
+            showDescription('direction', value);
         }
 
         function setJustifyContent(value) {
@@ -295,6 +431,7 @@
         }
 
         window.onload = function() {
+            setFlexDirection('row');
             setJustifyContent('flex-start');
             setAlignItems('flex-start');
         }
