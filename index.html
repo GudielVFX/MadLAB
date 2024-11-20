@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Interactivo de Flexbox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+
+        .flex-container {
+            background-color: #e9ecef;
+            border: 2px dashed #adb5bd;
+            min-height: 300px;
+            margin: 20px 0;
+            padding: 10px;
+            display: flex;
+        }
+
+        .box {
+            width: 80px;
+            background-color: #0d6efd;
+            color: white;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .box:nth-child(1) { font-size: 1em; }
+        .box:nth-child(2) { font-size: 2em; }
+        .box:nth-child(3) { font-size: 1.5em; }
+
+        .box {
+            height: 80px;
+        }
+
+        .flex-container[data-align="stretch"] .box {
+            height: auto;
+        }
+
+        .controls {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0b5ed7;
+        }
+
+        button.active {
+            background-color: #084298;
+        }
+
+        .property-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #084298;
+        }
+
+        .current-value {
+            background-color: #e9ecef;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        .description-panel {
+            background-color: #e7f5ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .description-panel h3 {
+            margin-top: 0;
+            color: #084298;
+        }
+
+        .description-panel p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .description-content {
+            display: none;
+        }
+
+        .description-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .example-text {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial Interactivo de Flexbox</h1>
+
+    <div class="container">
+        <div class="controls">
+            <div class="property-name">justify-content:</div>
+            <div class="button-group" id="justify-content-controls">
+                <button onclick="setJustifyContent('flex-start')">flex-start</button>
+                <button onclick="setJustifyContent('center')">center</button>
+                <button onclick="setJustifyContent('flex-end')">flex-end</button>
+                <button onclick="setJustifyContent('space-between')">space-between</button>
+                <button onclick="setJustifyContent('space-around')">space-around</button>
+            </div>
+            <div class="current-value" id="justify-content-value">justify-content: flex-start;</div>
+        </div>
+
+        <div class="controls">
+            <div class="property-name">align-items:</div>
+            <div class="button-group" id="align-items-controls">
+                <button onclick="setAlignItems('flex-start')">flex-start</button>
+                <button onclick="setAlignItems('center')">center</button>
+                <button onclick="setAlignItems('flex-end')">flex-end</button>
+                <button onclick="setAlignItems('stretch')">stretch</button>
+                <button onclick="setAlignItems('baseline')">baseline</button>
+            </div>
+            <div class="current-value" id="align-items-value">align-items: flex-start;</div>
+        </div>
+
+        <div class="flex-container" id="demo-container">
+            <div class="box">1</div>
+            <div class="box">2</div>
+            <div class="box">3</div>
+        </div>
+
+        <div class="description-panel">
+            <h3>Descripción</h3>
+            <!-- Descripciones para justify-content -->
+            <div id="justify-flex-start" class="description-content">
+                <h3>justify-content: flex-start</h3>
+                <p>Alinea los elementos al inicio del contenedor en el eje principal (horizontal).</p>
+                <p>Es el valor por defecto de justify-content.</p>
+                <p class="example-text">Uso común: Cuando quieres que todos los elementos empiecen desde el lado izquierdo.</p>
+            </div>
+
+            <div id="justify-center" class="description-content">
+                <h3>justify-content: center</h3>
+                <p>Centra los elementos en el eje principal del contenedor.</p>
+                <p>Todos los elementos se agrupan en el centro, manteniendo sus márgenes originales.</p>
+                <p class="example-text">Uso común: Centrar elementos horizontalmente en una navegación o galería.</p>
+            </div>
+
+            <div id="justify-flex-end" class="description-content">
+                <h3>justify-content: flex-end</h3>
+                <p>Alinea los elementos al final del contenedor en el eje principal.</p>
+                <p>Todos los elementos se mueven hacia el lado derecho del contenedor.</p>
+                <p class="example-text">Uso común: Alinear elementos a la derecha, como botones de acción en un formulario.</p>
+            </div>
+
+            <div id="justify-space-between" class="description-content">
+                <h3>justify-content: space-between</h3>
+                <p>Distribuye los elementos uniformemente en el contenedor.</p>
+                <p>El primer elemento va al inicio, el último al final, y el espacio restante se distribuye entre los elementos.</p>
+                <p class="example-text">Uso común: Crear navegaciones con elementos distribuidos uniformemente.</p>
+            </div>
+
+            <div id="justify-space-around" class="description-content">
+                <h3>justify-content: space-around</h3>
+                <p>Distribuye el espacio de manera uniforme alrededor de todos los elementos.</p>
+                <p>Cada elemento tiene la misma cantidad de espacio a sus lados.</p>
+                <p class="example-text">Uso común: Crear diseños con espaciado uniforme entre elementos.</p>
+            </div>
+
+            <!-- Descripciones para align-items -->
+            <div id="align-flex-start" class="description-content">
+                <h3>align-items: flex-start</h3>
+                <p>Alinea los elementos al inicio del eje transversal (vertical).</p>
+                <p>Los elementos se alinean en la parte superior del contenedor.</p>
+                <p class="example-text">Uso común: Alinear elementos en la parte superior de un contenedor.</p>
+            </div>
+
+            <div id="align-center" class="description-content">
+                <h3>align-items: center</h3>
+                <p>Centra los elementos en el eje transversal.</p>
+                <p>Los elementos se centran verticalmente en el contenedor.</p>
+                <p class="example-text">Uso común: Centrar verticalmente elementos en un banner o hero section.</p>
+            </div>
+
+            <div id="align-flex-end" class="description-content">
+                <h3>align-items: flex-end</h3>
+                <p>Alinea los elementos al final del eje transversal.</p>
+                <p>Los elementos se alinean en la parte inferior del contenedor.</p>
+                <p class="example-text">Uso común: Alinear elementos en la parte inferior de un contenedor.</p>
+            </div>
+
+            <div id="align-stretch" class="description-content">
+                <h3>align-items: stretch</h3>
+                <p>Estira los elementos para que ocupen todo el espacio disponible en el eje transversal.</p>
+                <p>Los elementos se estiran verticalmente para llenar el contenedor.</p>
+                <p class="example-text">Uso común: Hacer que todos los elementos tengan la misma altura en una fila.</p>
+            </div>
+
+            <div id="align-baseline" class="description-content">
+                <h3>align-items: baseline</h3>
+                <p>Alinea los elementos según la línea base del texto.</p>
+                <p>Útil cuando tienes elementos con diferentes tamaños de texto o fuentes.</p>
+                <p class="example-text">Uso común: Alinear elementos con diferentes tamaños de texto de manera coherente.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateActiveButtons(property, value) {
+            const buttons = document.querySelectorAll(`#${property}-controls button`);
+            buttons.forEach(button => {
+                button.classList.remove('active');
+                if (button.innerText === value) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        function showDescription(type, value) {
+            // Ocultar todas las descripciones
+            document.querySelectorAll('.description-content').forEach(desc => {
+                desc.classList.remove('active');
+            });
+
+            // Mostrar la descripción correspondiente
+            const descriptionId = `${type}-${value}`;
+            const description = document.getElementById(descriptionId);
+            if (description) {
+                description.classList.add('active');
+            }
+        }
+
+        function setJustifyContent(value) {
+            const container = document.getElementById('demo-container');
+            container.style.justifyContent = value;
+            document.getElementById('justify-content-value').textContent = `justify-content: ${value};`;
+            updateActiveButtons('justify-content', value);
+            showDescription('justify', value);
+        }
+
+        function setAlignItems(value) {
+            const container = document.getElementById('demo-container');
+            container.style.alignItems = value;
+            container.setAttribute('data-align', value);
+            document.getElementById('align-items-value').textContent = `align-items: ${value};`;
+            updateActiveButtons('align-items', value);
+            showDescription('align', value);
+        }
+
+        window.onload = function() {
+            setJustifyContent('flex-start');
+            setAlignItems('flex-start');
+        }
+    </script>
+</body>
+</html>
