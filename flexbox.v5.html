@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Interactivo de Flexbox</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background-color: #0b5ed7;
+        }
+
+        button.active {
+            background-color: #084298;
+        }
+
+        .property-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #084298;
+        }
+
+        .property-description {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .current-value {
+            background-color: #e9ecef;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .flex-container {
+            background-color: #e9ecef;
+            border: 2px dashed #adb5bd;
+            min-height: 200px;
+            margin: 20px 0;
+            padding: 10px;
+            display: flex;
+            transition: all 0.3s ease;
+        }
+
+        .box {
+            width: 80px;
+            background-color: #0d6efd;
+            color: white;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            height: 80px;
+        }
+
+        .box:nth-child(1) { font-size: 1em; }
+        .box:nth-child(2) { font-size: 2em; }
+        .box:nth-child(3) { font-size: 1.5em; }
+
+        .flex-container[data-align="stretch"] .box {
+            height: auto;
+        }
+
+        .flex-container[data-direction="column"],
+        .flex-container[data-direction="column-reverse"] {
+            min-height: 300px;
+        }
+
+        .description-panel {
+            background-color: #e7f5ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .description-panel h3 {
+            margin-top: 0;
+            color: #084298;
+            font-size: 1.2rem;
+        }
+
+        .description-panel p {
+            margin: 10px 0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .description-content {
+            display: none;
+        }
+
+        .description-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            button {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+                flex: 1 1 calc(50% - 5px);
+            }
+
+            .box {
+                width: 60px;
+                height: 60px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .section {
+                padding: 10px;
+            }
+
+            button {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Tutorial Interactivo de Flexbox</h1>
+
+    <div class="container">
+        <!-- Sección flex-direction -->
+        <div class="section">
+            <div class="controls">
+                <div class="property-name">flex-direction:</div>
+                <div class="property-description">
+                    <p>Determina la dirección principal del contenedor flex.</p>
+                </div>
+                <div class="button-group" id="flex-direction-controls">
+                    <button onclick="setFlexDirection('row')">row</button>
+                    <button onclick="setFlexDirection('row-reverse')">row-reverse</button>
+                    <button onclick="setFlexDirection('column')">column</button>
+                    <button onclick="setFlexDirection('column-reverse')">column-reverse</button>
+                </div>
+                <div class="current-value" id="flex-direction-value">flex-direction: row;</div>
+            </div>
+
+            <div class="flex-container" id="direction-demo">
+                <div class="box">1</div>
+                <div class="box">2</div>
+                <div class="box">3</div>
+            </div>
+
+            <div class="description-panel">
+                <div id="direction-row" class="description-content">
+                    <h3>flex-direction: row</h3>
+                    <p>Los elementos se colocan en una fila horizontal, de izquierda a derecha.</p>
+                </div>
+                <div id="direction-row-reverse" class="description-content">
+                    <h3>flex-direction: row-reverse</h3>
+                    <p>Los elementos se colocan en una fila horizontal, de derecha a izquierda.</p>
+                </div>
+                <div id="direction-column" class="description-content">
+                    <h3>flex-direction: column</h3>
+                    <p>Los elementos se apilan verticalmente, de arriba hacia abajo.</p>
+                </div>
+                <div id="direction-column-reverse" class="description-content">
+                    <h3>flex-direction: column-reverse</h3>
+                    <p>Los elementos se apilan verticalmente, de abajo hacia arriba.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección justify-content -->
+        <div class="section">
+            <div class="controls">
+                <div class="property-name">justify-content:</div>
+                <div class="property-description">
+                    <p>Controla la alineación de los elementos en el eje principal.</p>
+                </div>
+                <div class="button-group" id="justify-content-controls">
+                    <button onclick="setJustifyContent('flex-start')">flex-start</button>
+                    <button onclick="setJustifyContent('center')">center</button>
+                    <button onclick="setJustifyContent('flex-end')">flex-end</button>
+                    <button onclick="setJustifyContent('space-between')">space-between</button>
+                    <button onclick="setJustifyContent('space-around')">space-around</button>
+                </div>
+                <div class="current-value" id="justify-content-value">justify-content: flex-start;</div>
+            </div>
+
+            <div class="flex-container" id="justify-demo">
+                <div class="box">1</div>
+                <div class="box">2</div>
+                <div class="box">3</div>
+            </div>
+
+            <div class="description-panel">
+                <div id="justify-flex-start" class="description-content">
+                    <h3>justify-content: flex-start</h3>
+                    <p>Alinea los elementos al inicio del contenedor en el eje principal.</p>
+                </div>
+                <div id="justify-center" class="description-content">
+                    <h3>justify-content: center</h3>
+                    <p>Centra los elementos en el eje principal del contenedor.</p>
+                </div>
+                <div id="justify-flex-end" class="description-content">
+                    <h3>justify-content: flex-end</h3>
+                    <p>Alinea los elementos al final del contenedor en el eje principal.</p>
+                </div>
+                <div id="justify-space-between" class="description-content">
+                    <h3>justify-content: space-between</h3>
+                    <p>Distribuye los elementos uniformemente en el contenedor.</p>
+                </div>
+                <div id="justify-space-around" class="description-content">
+                    <h3>justify-content: space-around</h3>
+                    <p>Distribuye el espacio uniformemente alrededor de los elementos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección align-items -->
+        <div class="section">
+            <div class="controls">
+                <div class="property-name">align-items:</div>
+                <div class="property-description">
+                    <p>Controla la alineación de los elementos en el eje transversal.</p>
+                </div>
+                <div class="button-group" id="align-items-controls">
+                    <button onclick="setAlignItems('flex-start')">flex-start</button>
+                    <button onclick="setAlignItems('center')">center</button>
+                    <button onclick="setAlignItems('flex-end')">flex-end</button>
+                    <button onclick="setAlignItems('stretch')">stretch</button>
+                    <button onclick="setAlignItems('baseline')">baseline</button>
+                </div>
+                <div class="current-value" id="align-items-value">align-items: flex-start;</div>
+            </div>
+
+            <div class="flex-container" id="align-demo">
+                <div class="box">1</div>
+                <div class="box">2</div>
+                <div class="box">3</div>
+            </div>
+
+            <div class="description-panel">
+                <div id="align-flex-start" class="description-content">
+                    <h3>align-items: flex-start</h3>
+                    <p>Alinea los elementos al inicio del eje transversal.</p>
+                </div>
+                <div id="align-center" class="description-content">
+                    <h3>align-items: center</h3>
+                    <p>Centra los elementos en el eje transversal.</p>
+                </div>
+                <div id="align-flex-end" class="description-content">
+                    <h3>align-items: flex-end</h3>
+                    <p>Alinea los elementos al final del eje transversal.</p>
+                </div>
+                <div id="align-stretch" class="description-content">
+                    <h3>align-items: stretch</h3>
+                    <p>Estira los elementos para ocupar todo el espacio disponible.</p>
+                </div>
+                <div id="align-baseline" class="description-content">
+                    <h3>align-items: baseline</h3>
+                    <p>Alinea los elementos según la línea base del texto.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateActiveButtons(property, value) {
+            const buttons = document.querySelectorAll(`#${property}-controls button`);
+            buttons.forEach(button => {
+                button.classList.remove('active');
+                if (button.innerText === value) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        function showDescription(type, value) {
+            const parentSection = document.querySelector(`#${type}-demo`).closest('.section');
+            const descriptions = parentSection.querySelectorAll('.description-content');
+            descriptions.forEach(desc => {
+                desc.classList.remove('active');
+            });
+
+            const descriptionId = `${type}-${value}`;
+            const description = parentSection.querySelector(`#${descriptionId}`);
+            if (description) {
+                description.classList.add('active');
+            }
+        }
+
+        function setFlexDirection(value) {
+            const container = document.getElementById('direction-demo');
+            container.style.flexDirection = value;
+            container.setAttribute('data-direction', value);
+            document.getElementById('flex-direction-value').textContent = `flex-direction: ${value};`;
+            updateActiveButtons('flex-direction', value);
+            showDescription('direction', value);
+        }
+
+        function setJustifyContent(value) {
+            const container = document.getElementById('justify-demo');
+            container.style.justifyContent = value;
+            document.getElementById('justify-content-value').textContent = `justify-content: ${value};`;
+            updateActiveButtons('justify-content', value);
+            showDescription('justify', value);
+        }
+
+        function setAlignItems(value) {
+            const container = document.getElementById('align-demo');
+            container.style.alignItems = value;
+            container.setAttribute('data-align', value);
+            document.getElementById('align-items-value').textContent = `align-items: ${value};`;
+            updateActiveButtons('align-items', value);
+            showDescription('align', value);
+        }
+
+        // Inicializar los valores por defecto
+        window.onload = function() {
+            setFlexDirection('row');
+            setJustifyContent('flex-start');
+            setAlignItems('flex-start');
+        }
+    </script>
+</body>
+</html>
